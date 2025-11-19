@@ -1,0 +1,38 @@
+<form id="taskForm">
+    <input type="text" name="title" placeholder="Nouvelle tâche" required>
+    <button type="submit">Ajouter</button>
+</form>
+
+<ul id="taskList">
+    <% tasks.forEach(task => { %>
+        <li><%= task.title %> - <% if(task.done){ %>Terminé<% } else { %>En cours<% } %></li>
+    <% }) %>
+</ul>
+
+<script>
+const form = document.getElementById('taskForm');
+const taskList = document.getElementById('taskList');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = form.title.value;
+    if (!title) return alert("Le titre est obligatoire");
+    
+    const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title })
+    });
+    
+    if(res.ok){
+        const task = await res.json();
+        const li = document.createElement('li');
+        li.textContent = `${task.title} - En cours`;
+        taskList.appendChild(li);
+        form.reset();
+    } else {
+        const error = await res.json();
+        alert(error.error);
+    }
+});
+</script>
