@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mon-package": "file:../mon-package"
+  }
+}
